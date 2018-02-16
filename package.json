@@ -1,0 +1,23 @@
+{
+  "name": "coxxx-payment-widget",
+  "version": "1.0.0",
+  "description": "Payment widget for coxxx coin, made for porn sites to place on there site to receive subscripton payments from users.",
+  "main": "App.js",
+  "dependencies": {},
+  "devDependencies": {
+    "ethjs-contract": "^0.1.9",
+    "ethjs-query": "^0.3.3",
+    "jslint": "^0.12.0"
+  },
+  "scripts": {
+    "build": "browserify test.js -o bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "coxxxcoin",
+    "porn",
+    "paymentgateway"
+  ],
+  "author": "Scott Lindh",
+  "license": "ISC"
+}
