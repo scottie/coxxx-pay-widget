@@ -221,32 +221,38 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541'; //
                             eth.estimateGas({
                                 from: eth.accounts[0], 
                                 to: "0x0Fe18f369c7F34208922cAEBbd5d21E131E44692", 
-                                amount: web3.toWei(1, "ether")}, function(d){                                
-                                if(gas.toString() != "null"){
-                                    gas = d; 
-                                    console.log("Gas: " + d);
+                                value: web3.toWei(1, "ether")
+                              }, 
+                              function(e, d) {
+                                //var gas = web3.toBigNumber(gas).toString();                            
+                                if (gas.toString() != "null") {
+                                  gas = d; 
+                                  console.log("Gas: " + d);
+                                  console.log("You have enough coins.");
+                                  //coxxx.approve(function(error, result) { console.log('result: ' + result, 'error: ' + error); } );
+                                  coxxx.approve(siteAddress, paymentAmount, function(e, d){
+                                          //console.log(d);
+                                          if(d.error == null){
+                                              console.log("Payment has been made");
+                                              //log transaction id
+                                              //
+                                          }
+                                          else{
+                                              console.log();
+                                          }
+                                          
+                                  //        //webhook / callback
+                                      });
+                                  }else{
+                                      console.log("You dont have enough coins to make this transaction.");
+                                      //callback error to display on widget
+                                      $('#coxxxCoin-widget-container').html('Your balance is not enough to make this transaction.');
+                                  };
+                                  });
+      
                                 }
-                                
-                            });
+                             });
                           
-                            console.log("You have enough coins.");
-                            //coxxx.approve(function(error, result) { console.log('result: ' + result, 'error: ' + error); } );
-                            coxxx.approve(siteAddress, paymentAmount, function(d){
-                                    //console.log(d);
-                                    if(d.error == null){
-                                        console.log("Payment has been made");
-                                        //log transaction id
-                                        //
-                                    }
-                                    
-                            //        //webhook / callback
-                                });
-                            }else{
-                                console.log("You dont have enough coins to make this transaction.");
-                                //callback error to display on widget
-                                $('#coxxxCoin-widget-container').html('Your balance is not enough to make this transaction.');
-                            };
-                    });
 
                   } else {
                       console.log("Please install MetaMask.");
@@ -262,4 +268,4 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541'; //
         //});
     }
     
-    })(); // Call anon function immediately
+    })(); // Call anon function right away... 
