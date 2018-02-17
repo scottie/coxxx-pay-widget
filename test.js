@@ -62,15 +62,9 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541';
                 console.log("ethJS libarys loaded!");
                 var button = document.querySelector('button.transferFunds');
                 button.addEventListener('click', function() {
-                    console.log("button clicked !");
-                    console.log("Sending Transaction...");
                     console.log(siteAddress);
                     console.log(paymentAmount);    
-                    console.log(siteUrl);
-                    const eth = new Eth(web3.currentProvider);
-                    const contract = new EthContract(eth);
-                    const coxxxToken = contract(abi);
-                    var CoxxxToken = coxxxToken.at('0x2134057C0b461F898D375Cead652Acae62b59541');
+                    console.log(siteUrl);                
                     var account = web3.eth.accounts[0];
                     if(account.toString() == "undefined"){
                         console.log("Please login to MetaMask, then try again.");
@@ -80,7 +74,7 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541';
                         console.log("ETH Address: " + account); 
                         // getBalance(account); 
                         getBalance(account);
-                        getCoxxxBalance(function(balance){
+                        getCoxxxBalance(account, function(balance){
                         console.log('Coxxx Coin Tokens Owned: ' + balance);
                         if(parseInt(balance) > paymentAmount ){ // gas fee
                             console.log("You have enough cox coin pay");
@@ -97,7 +91,7 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541';
     };
     
     //
-    function getCoxxxBalance(callback){       
+    function getCoxxxBalance(addr, callback){       
         var tknAddress = (addr).substring(2);
         var contractData = ('0x70a08231000000000000000000000000' + tknAddress);
         console.log("Web3 libary version: " + web3.version.api); // web3 libary version
@@ -199,12 +193,39 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541';
                         $('#coxxxCoin-widget-container').html('Please login with metamask, then try again.');
                         return;
                     }
-                   clicky(addr, paymentAmount, siteUrl, function(d){
-                    if(true){
-                            //web3.call().
+                    //addr = user addresss
+                    //siteAddress = sites address
+                   clicky(siteAddress, paymentAmount, siteUrl, function(d){
+                    console.log("Enough Coins: " + d);
+                    if(d){
+                            
+                            /**
+                             * Set allowance for other address
+                             *
+                             * Allows `_spender` to spend no more than `_value` tokens in your behalf
+                             *
+                             * @param _spender The address authorized to spend
+                             * @param _value the max amount they can spend
+                             */
+                            //function approve(address _spender, uint256 _value) public
+                            //    returns (bool success) {
+                            //    allowance[msg.sender][_spender] = _value;
+                            //    return true;
+                            //}
+                            const eth = new Eth(web3.currentProvider);
+                            const contract = new EthContract(eth);
+                            const coxxxToken = contract(abi);
+                            var coxxx = coxxxToken.at('0x2134057C0b461F898D375Cead652Acae62b59541');
                                 console.log("You have enough coins.");
+                                coxxx.approve(siteAddress, paymentAmount, function(d){
+                                    console.log(d);
+                                    console.log("Payment has been made");
+                                    //webhook / callback
+                                });
                             }else{
                                 console.log("You dont have enough coins to make this transaction.");
+                                //callback error to display on widget
+                                $('#coxxxCoin-widget-container').html('Your balance is not enough to make this transaction.');
                             };
                     });
 
