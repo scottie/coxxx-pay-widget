@@ -8068,7 +8068,7 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541'; //
 
                     //startApp(web3);
                     /******* Load HTML *******/         
-                    console.log("MetaMask detected, starting web3 experiance...");        
+                   console.log("MetaMask detected, starting web3 experiance...");        
                    $('#coxxxCoin-widget-container').html('<button class="transferFunds">Subscribe with CoxxxCoins!</button>');
                    var addr = web3.eth.accounts[0]; //naga
                    if(typeof addr == "undefined"){
@@ -8079,8 +8079,8 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541'; //
                     //addr = user addresss
                     //siteAddress = sites address
                    clicky(siteAddress, paymentAmount, siteUrl, function(d){
-                    console.log("Enough Coins: " + d);
-                    if(d){
+                       console.log("Enough Coins: " + d);
+                       if(d){
                             //https://etherscan.io/transcation/
                             
                             /**
@@ -8107,23 +8107,22 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541'; //
                                 value: web3.toWei(1, "ether")
                               }, 
                               function(e, d) {
-                                //var gas = web3.toBigNumber(gas).toString();
-                                console.log(gas);
-                            
+                                //var gas = web3.toBigNumber(gas).toString();                            
                                 if (gas.toString() != "null") {
                                   gas = d; 
                                   console.log("Gas: " + d);
                                   console.log("You have enough coins.");
                                   //coxxx.approve(function(error, result) { console.log('result: ' + result, 'error: ' + error); } );
-                                  coxxx.approve(siteAddress, paymentAmount, function(e, d){
-                                          //console.log(d);
-                                          if(d.error == null){
+                                  /*
+                                  coxxx.approve(siteAddress,paymentAmount, {from:eth.accounts[0]}, function(e, d){
+                                          //console.log(d); 
+                                          if(e == null){
                                               console.log("Payment has been made");
                                               //log transaction id
                                               //
                                           }
                                           else{
-                                              console.log();
+                                              console.log("Error: " + e);
                                           }
                                           
                                   //        //webhook / callback
@@ -8134,24 +8133,32 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541'; //
                                       $('#coxxxCoin-widget-container').html('Your balance is not enough to make this transaction.');
                                   };
                                   });
-      
+                                  */
+                                  coxxx.approve(siteAddress, eth.accounts[0], paymentAmount)
+                                    .then(async result => {
+                                    const tx = await coxxx.transferFrom.sendTransaction(eth.accounts[0], siteAddress, paymentAmount);
+                                    console.log({success: true, data: {from: eth.accounts[0], to: siteAddress, amount: paymentAmount, tx: tx}});
+                                    })
+                                    .catch(error => {
+                                    console.log('Unable to approve transfer ' + paymentAmount + ' tokens to the address ' + siteAddress, {success: false});
+                                    });
                                 }
-                             });
-                          
-
-                  } else {
-                      console.log("Please install MetaMask.");
-                      $('#coxxxCoin-widget-container').html('<img src="https://github.com/MetaMask/faq/raw/master/images/download-metamask.png"></img>');
-                      return;
+                            });
+                        }else {
+                          console.log("Please install MetaMask.");
+                          $('#coxxxCoin-widget-container').html('<img src="https://github.com/MetaMask/faq/raw/master/images/download-metamask.png"></img>');
+                          return;
+                        }
                       //
                      // Warn the user that they need to get a web3 browser
                      // Or install MetaMask, etc...
-                  }
-               
+                        
+                   });
+                } 
               
               });        
         //});
     }
     
-    })(); // Call anon function right away... 
+    })(); // Call anon function right away 
 },{"ethjs-contract":8,"ethjs-query":11}]},{},[19]);
