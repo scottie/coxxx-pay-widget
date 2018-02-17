@@ -8081,6 +8081,7 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541';
                    clicky(siteAddress, paymentAmount, siteUrl, function(d){
                     console.log("Enough Coins: " + d);
                     if(d){
+                            //https://etherscan.io/transcation/
                             
                             /**
                              * Set allowance for other address
@@ -8095,15 +8096,33 @@ var coxxxContract = '0x2134057C0b461F898D375Cead652Acae62b59541';
                             //    allowance[msg.sender][_spender] = _value;
                             //    return true;
                             //}
+                            var gas = 0;
                             const eth = new Eth(web3.currentProvider);
                             const contract = new EthContract(eth);
                             const coxxxToken = contract(abi);
                             var coxxx = coxxxToken.at('0x2134057C0b461F898D375Cead652Acae62b59541');
-                                console.log("You have enough coins.");
-                                coxxx.approve(siteAddress, paymentAmount, function(d){
+                            eth.estimateGas({
+                                from: eth.accounts[0], 
+                                to: "0x0Fe18f369c7F34208922cAEBbd5d21E131E44692", 
+                                amount: web3.toWei(1, "ether")}, function(d){                                
+                                if(gas != "null"){
+                                    gas = d; 
+                                    console.log("Gas: " + d);
+                                }
+                                
+                            });
+                          
+                            console.log("You have enough coins.");
+                            //coxxx.approve(function(error, result) { console.log('result: ' + result, 'error: ' + error); } );
+                            coxxx.approve(siteAddress, paymentAmount, function(d){
                                     console.log(d);
-                                    console.log("Payment has been made");
-                                    //webhook / callback
+                                    if(d.error == null){
+                                        console.log("Payment has been made");
+                                        //log transaction id
+                                        //
+                                    }
+                                    
+                            //        //webhook / callback
                                 });
                             }else{
                                 console.log("You dont have enough coins to make this transaction.");
